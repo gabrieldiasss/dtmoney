@@ -51,7 +51,12 @@ export const Content = styled(Diolog.Content)`
             border-radius: 6px;
             margin-top: 1.5rem;
 
-            &:hover {
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            &:not(:disabled)hover {
                 background: ${props => props.theme["green-700"]};
                 transition: backgorund-color 0.2s;
             }
