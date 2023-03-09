@@ -4,6 +4,9 @@ import { X, ArrowCircleUp, ArrowCircleDown } from 'phosphor-react'
 import { useForm, Controller } from "react-hook-form"
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { api } from "../../lib/axios"
+import { useContext } from "react"
+import { TransactionsContext } from "../../context/TransactionsContext"
 
 
 const newTransactionFormSchema = z.object({
@@ -17,17 +20,20 @@ type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
 export function NewTransactionModal() {
 
-    const { control, register, handleSubmit, formState: { isSubmitting } } = useForm<NewTransactionFormInputs>({
+    const { createTransaction } = useContext(TransactionsContext)
+
+    const { control, register, handleSubmit, formState: { isSubmitting }, reset } = useForm<NewTransactionFormInputs>({
         resolver: zodResolver(newTransactionFormSchema),
         defaultValues: {
             type: 'income'
         }
     })
 
-    async function handleSearchTransaction(data: NewTransactionFormInputs) {
+    async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
 
-        await new Promise(resolve => setTimeout(resolve, 3000))
-        console.log(data)
+        createTransaction(data)
+
+        reset()
     }
 
     return (
@@ -42,7 +48,7 @@ export function NewTransactionModal() {
                         <X size={24} />
                     </CloseButton>
 
-                    <form onSubmit={handleSubmit(handleSearchTransaction)} >
+                    <form onSubmit={handleSubmit(handleCreateNewTransaction)} >
                         <input type="text" placeholder="Descrição" required {...register('description')} />
                         <input type="number" placeholder="Preço" required {...register('price', { valueAsNumber: true })} />
                         <input type="text" placeholder="Categoria" required {...register('category')} />
