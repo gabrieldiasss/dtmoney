@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContextSelector } from 'use-context-selector'
 import { Header } from '../../components/Header'
 import { SearchForm } from '../../components/SearchForm'
 import { Summary } from '../../components/Summary'
@@ -10,8 +10,22 @@ import {
   TransactionTable,
 } from './styles'
 
+interface Transaction {
+  id: number
+  description: string
+  type: 'income' | 'outcome'
+  price: number
+  category: string
+  createdAt: string
+}
+
 export function Transactions() {
-  const { transactions } = useContext(TransactionsContext)
+  const transactions: Transaction[] = useContextSelector(
+    TransactionsContext,
+    (context) => {
+      return context.transactions
+    },
+  )
 
   return (
     <div>
@@ -22,7 +36,7 @@ export function Transactions() {
         <SearchForm />
         <TransactionTable>
           <tbody>
-            {transactions.map((transaction) => {
+            {transactions.map((transaction: Transaction) => {
               return (
                 <tr key={transaction.id}>
                   <td width="50%">{transaction.description}</td>
